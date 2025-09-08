@@ -66,14 +66,14 @@ jobs:
         
     #     echo "Deployment initiated for service $SERVICE_NAME with task definition $NEW_TASK_DEFINITION_ARN."
 
-    - name: Run ECS Task
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-        CLUSTER_NAME: SaferPlacesCluster
-        SERVICE_NAME: pygeoapi-vicenza
-      run: |
-        aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment
+    # - name: Run ECS Task
+    #   env:
+    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+    #     CLUSTER_NAME: SaferPlacesCluster
+    #     SERVICE_NAME: pygeoapi-venezia
+    #   run: |
+    #     aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment
       
 
