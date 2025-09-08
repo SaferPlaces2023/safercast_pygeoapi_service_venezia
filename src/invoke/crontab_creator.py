@@ -16,6 +16,14 @@ CRONEJOBS = pd.DataFrame([
             os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'dpc-radar-rainfall-process.json')
         ],
     },
+    {
+        'description': 'ARPAV - Precipitation',
+        'schedule': '*/5 * * * *',
+        'script': os.path.join(INVOKE_INGESTOR_PATH, 'invoke_ingestor.py'),
+        'args': [ 
+            os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'arpav-precipitation-process.json')
+        ],
+    },
     
     {
         'description': 'ICON-INGESTOR',

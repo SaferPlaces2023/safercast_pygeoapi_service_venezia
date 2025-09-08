@@ -1,1 +1,2 @@
 from .dpc_radar_rainfall_process import DPCRadarRainfallProcessor
+from .arpav_precipitation_process import ARPAVPrecipitationProcessor

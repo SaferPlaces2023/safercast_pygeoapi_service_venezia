@@ -12,6 +12,7 @@ from .utils import _processes_utils
 
 # Realtime Providers
 from .data_providers.realtime import DPCRadarRainfallProcessor
+from .data_providers.realtime import ARPAVPrecipitationProcessor
 
 
 # Forecast Providers
