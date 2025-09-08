@@ -16,14 +16,6 @@ CRONEJOBS = pd.DataFrame([
             os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'dpc-radar-rainfall-process.json')
         ],
     },
-    {
-        'description': 'RADAR',
-        'schedule': '*/5 * * * *',
-        'script': os.path.join(INVOKE_INGESTOR_PATH, 'invoke_ingestor.py'),
-        'args': [ 
-            os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'radar-precipitation-process.json')
-        ],
-    },
     
     {
         'description': 'ICON-INGESTOR',
@@ -41,31 +33,15 @@ CRONEJOBS = pd.DataFrame([
             os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'icon2i-precipitation-retriever-process.json')
         ],
     },
-    # DOC: API KEY not avaliable by now
-    {
-        'description': 'METEOBLUE - basic-5min',
-        'schedule': '*/5 * * * *',
-        'script': os.path.join(INVOKE_INGESTOR_PATH, 'invoke_ingestor.py'),
-        'args': [ 
-            os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'meteoblue-precipitation-retriever-process.json')
-        ],
-    },
-    {
-        'description': 'NOWRADAR',
-        'schedule': '*/5 * * * *',
-        'script': os.path.join(INVOKE_INGESTOR_PATH, 'invoke_ingestor.py'),
-        'args': [ 
-            os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'nowradar-precipitation-process.json')
-        ],
-    },
-    {
-        'description': 'RADAR-HFS',
-        'schedule': '0 * * * *',
-        'script': os.path.join(INVOKE_INGESTOR_PATH, 'invoke_ingestor.py'),
-        'args': [ 
-            os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'radar-hfs-precipitation-process.json')
-        ],
-    },
+    # # DOC: API KEY not avaliable by now
+    # {
+    #     'description': 'METEOBLUE - basic-5min',
+    #     'schedule': '*/5 * * * *',
+    #     'script': os.path.join(INVOKE_INGESTOR_PATH, 'invoke_ingestor.py'),
+    #     'args': [ 
+    #         os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'meteoblue-precipitation-retriever-process.json')
+    #     ],
+    # },
     
     {
         'description': 'BUCKET-CLEANER',

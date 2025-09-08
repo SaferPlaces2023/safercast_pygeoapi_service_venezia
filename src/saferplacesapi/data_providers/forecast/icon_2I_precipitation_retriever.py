@@ -109,8 +109,8 @@ PROCESS_METADATA = {
         "inputs": {
             "token": "ABC123XYZ666",
             "debug": True,
-            "lat_range": [44, 44.5],
-            "long_range": [12.2, 12.8],
+            "lat_range": [ 45.28, 45.63 ],
+            "long_range": [ 11.95, 12.46 ],
             "time_range": ["2025-01-21T08:00:00.000", "2025-01-22T23:10:00.000"],
             "out_format": "netcdf"
         }

@@ -10,8 +10,8 @@
             
             "service": "basic-5min",
 
-            "lat_range": [ 45.48, 45.62 ],
-            "long_range": [ 11.47, 11.62 ],
+            "lat_range": [ 45.28, 45.63 ],
+            "long_range": [ 11.95, 12.46 ],
 
             "grid_res": 2000,
             

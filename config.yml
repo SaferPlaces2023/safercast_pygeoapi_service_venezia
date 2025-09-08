@@ -107,11 +107,6 @@ resources:
         processor:
             name: saferplacesapi.DPCRadarRainfallProcessor
 
-    radar-precipitation-process:
-        type: process
-        processor:
-            name: saferplacesapi.RadarPrecipitationProcessor
-
 
 
     icon2i-precipitation-ingestor-process:
@@ -129,18 +124,6 @@ resources:
         type: process
         processor:
             name: saferplacesapi.MeteobluePrecipitationRetrieverProcessor
-
-
-    nowradar-precipitation-process:
-        type: process
-        processor:
-            name: saferplacesapi.NowRadarPrecipitationProcessor
-            
-
-    radar-hfs-precipitation-process:
-        type: process
-        processor:
-            name: saferplacesapi.RadarHFSPrecipitationProcessor
 
 
     

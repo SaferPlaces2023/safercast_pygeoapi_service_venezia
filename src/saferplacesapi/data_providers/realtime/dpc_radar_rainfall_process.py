@@ -107,8 +107,8 @@ PROCESS_METADATA = {
         "inputs": {
             "token": "ABC123XYZ666",
             "debug": True,
-            "lat_range": [43.8, 44.2],
-            "long_range": [12.4, 12.9],
+            "lat_range": [ 45.28, 45.63 ],
+            "long_range": [ 11.95, 12.46 ],
             "time_range": ["2025-03-18T10:00:00.000", "2025-03-18T11:00:00.000"], # INFO: keep range inside 1 week back from now
             "out_format": "json"
         }
