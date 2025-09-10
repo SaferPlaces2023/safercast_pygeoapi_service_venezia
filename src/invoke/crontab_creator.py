@@ -18,10 +18,18 @@ CRONEJOBS = pd.DataFrame([
     },
     {
         'description': 'ARPAV - Precipitation',
-        'schedule': '*/5 * * * *',
+        'schedule': '0 * * * *',
         'script': os.path.join(INVOKE_INGESTOR_PATH, 'invoke_ingestor.py'),
         'args': [ 
             os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'arpav-precipitation-process.json')
+        ],
+    },
+    {
+        'description': 'ARPAV - Water Level',
+        'schedule': '0 * * * *',
+        'script': os.path.join(INVOKE_INGESTOR_PATH, 'invoke_ingestor.py'),
+        'args': [ 
+            os.path.join(INVOKE_INGESTOR_PATH, 'invocation_data', 'arpav-water-level-process.json')
         ],
     },
     

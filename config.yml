@@ -112,6 +112,11 @@ resources:
         processor:
             name: saferplacesapi.ARPAVPrecipitationProcessor
 
+    arpav-water-level-process:
+        type: process
+        processor:
+            name: saferplacesapi.ARPAVWaterLevelProcessor
+
 
 
     icon2i-precipitation-ingestor-process:

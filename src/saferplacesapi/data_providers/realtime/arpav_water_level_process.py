@@ -28,10 +28,10 @@ PROCESS_METADATA = {
     'version': '0.2.0',
     'id': 'safer-process',
     'title': {
-        'en': 'ARPAV Precipitation Processor',
+        'en': 'ARPAV Water Level Processor',
     },
     'description': {
-        'en': 'Realtime precipitation data from ARPAV service'
+        'en': 'Realtime water level data from ARPAV service'
     },
     'jobControlOptions': ['sync-execute', 'async-execute'],
     'keywords': ['safer process'],
@@ -114,18 +114,18 @@ PROCESS_METADATA = {
 
 # -----------------------------------------------------------------------------
 
-class ARPAVPrecipitationProcessor(BaseProcessor):
-    """ARPAV Precipitation Processor"""
+class ARPAVWaterLevelProcessor(BaseProcessor):
+    """ARPAV Water Level Processor"""
 
     def __init__(self, processor_def):
         super().__init__(processor_def, PROCESS_METADATA)
         
         self.dataset_name = 'ARPAV'
-        self.variable_name = 'precipitation'
+        self.variable_name = 'water_level'
         
         self._data_provider_service = "https://api.arpa.veneto.it/REST/v1/meteo_meteogrammi"  
         
-        self._data_folder = os.path.join(os.getcwd(), 'arpav_precipitation_data')
+        self._data_folder = os.path.join(os.getcwd(), 'arpav_water_level_data')
         if not os.path.exists(self._data_folder):
             os.makedirs(self._data_folder)
         self.bucket_destination = f'{_s3_utils._base_bucket}/{self.dataset_name}/{self.variable_name}'
@@ -165,8 +165,8 @@ class ARPAVPrecipitationProcessor(BaseProcessor):
         hour_dfs = []
         for hour_delta in range(start_hour_delta, end_hour_delta + 1):
             params = {
-                'rete': 'MGRAMMI',  # ???: meaning to be defined
-                'coordcd': '23',    # ???: meaning to be defined
+                'rete': 'MGRAMMI',      # ???: meaning to be defined
+                'coordcd': '20005',     # ???: meaning to be defined
                 'orario': hour_delta
             }
             response = requests.get(self._data_provider_service, params=params)
@@ -180,7 +180,14 @@ class ARPAVPrecipitationProcessor(BaseProcessor):
         gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['longitudine'], df['latitudine'], crs='EPSG:4326'), crs='EPSG:4326')
         gdf.rename(columns={'dataora': 'date_time'}, inplace=True)
         gdf['date_time'] = gdf['date_time'].apply(lambda x: datetime.datetime.fromisoformat(x) if isinstance(x, str) else x)
-        gdf['valore'] = gdf['valore'].apply(lambda x: float(x) if isinstance(x, (str, int, float)) else np.nan)
+
+        def extract_level(level):
+            try:
+                return json.loads(level).get('LIVELLO', np.nan)
+            except:
+                return np.nan
+            
+        gdf['valore'] = gdf['valore'].apply(lambda x: extract_level(x))
         return gdf
 
 
@@ -195,7 +202,7 @@ class ARPAVPrecipitationProcessor(BaseProcessor):
                 'coordinates': [row['longitudine'], row['latitudine']]
             }
             properties = { prop: row[prop] for prop in self.properties if prop not in ['longitudine', 'latitudine', 'dataora', 'date_time', 'valore'] }
-            properties['precipitation'] = [ 
+            properties['water_level'] = [ 
                 [ dt.isoformat(), val if not np.isnan(val) else None ]
                 for dt, val in zip(row['date_time'], row['valore']) 
             ]
@@ -228,10 +235,10 @@ class ARPAVPrecipitationProcessor(BaseProcessor):
         ]        
         variable_metadata = [
             {
-                '@name': 'precipitation',
-                '@alias': 'precipitation',
-                '@unit': 'mm',
-                '@type': 'rainfall'
+                '@name': 'water_level',
+                '@alias': 'water_level',
+                '@unit': 'm',
+                '@type': 'level'
             }
         ]
         field_metadata = info_metadata + variable_metadata
@@ -330,4 +337,4 @@ class ARPAVPrecipitationProcessor(BaseProcessor):
         
 
     def __repr__(self):
-        return f'<ARPAVPrecipitationProcessor> {self.name}'
+        return f'<ARPAVWaterLevelProcessor> {self.name}'

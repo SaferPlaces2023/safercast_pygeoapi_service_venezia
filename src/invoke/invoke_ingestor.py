@@ -53,9 +53,14 @@ if ingestor_process == 'dpc-radar-rainfall-process':
     runtime_params['time_range'] = [dt2iso(start_time), dt2iso(end_time)]
 
 elif ingestor_process == 'arpav-precipitation-process':
-    round_time = current_utc_datetime.replace(minute=floor_to_multiple(current_utc_datetime.minute, 5), second=0, microsecond=0)
-    min_delay = 5
-    start_time = round_time - datetime.timedelta(hours = 5)
+    round_time = current_utc_datetime.replace(minute=0, second=0, microsecond=0)
+    start_time = round_time - datetime.timedelta(hours = 12)
+    end_time = round_time
+    runtime_params['time_range'] = [dt2iso(start_time), dt2iso(end_time)]
+
+elif ingestor_process == 'arpav-water-level-process':
+    round_time = current_utc_datetime.replace(minute=0, second=0, microsecond=0)
+    start_time = round_time - datetime.timedelta(hours = 12)
     end_time = round_time
     runtime_params['time_range'] = [dt2iso(start_time), dt2iso(end_time)]
 
