@@ -166,7 +166,10 @@ cython_debug/
 src/gdrive_auth_info/
 
 # Docker Compose
-docker-compose.yml
+docker-compose.local.yml
+
+# PyGeoApi Config
+config.local.yml
 
 tests/
 src/invoke/wsl_crontab.txt

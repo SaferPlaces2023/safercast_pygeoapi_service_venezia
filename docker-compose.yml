@@ -1,0 +1,20 @@
+services:
+  pygeoapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./config.yml:/pygeoapi/config.yml
+      - ./src/data:/pygeoapi/src/data
+    ports:
+      - "5002:80"
+    environment:
+      - API_ROOT=
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
+      - AWS_DEFAULT_REGION=
+      - AWS_DEFAULT_OUTPUT=
+      - DEFAULT_BUCKET=
+      - DEFAULT_REMOTE_DIR=
+      - INT_API_TOKEN=
+      - METEOBLUE_API_KEY=
