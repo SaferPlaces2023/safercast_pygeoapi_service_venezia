@@ -38,7 +38,7 @@ server:
     bind:
         host: 0.0.0.0
         port: 80
-    url: http://localhost:80 # TODO: set with deployment URL
+    url: http://pygeoapi-venezia-1562001364.eu-north-1.elb.amazonaws.com/
     mimetype: application/json; charset=UTF-8
     encoding: utf-8
     gzip: false
