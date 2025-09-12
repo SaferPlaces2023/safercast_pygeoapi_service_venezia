@@ -120,11 +120,9 @@ class AvaliableDataService(BaseProcessor):
         # FIXME: This is absolutely prone to bugs and hard to mantain → time of use a Names class manager is arrived
         self.avaliable_providers = {
             'DPC': [ 'SRI' ],
-            'RADAR_ITA_1KM_5MIN': [ 'rainrate' ],
+            'ARPAV': [ 'precipitation', 'water_level' ],
             'ICON_2I': [ 'precipitation' ],
             'Meteoblue': [ 'precipitation' ],
-            'NOWRADAR_ITA_1KM_5MIN': [ 'rainrate' ],
-            'HFS_ITA_4KM_1H': [ 'PREC_HOURLY' ],
         }
         
         self.avaliable_group_by = [
