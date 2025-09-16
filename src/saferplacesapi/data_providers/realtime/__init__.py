@@ -1,3 +1,4 @@
 from .dpc_radar_rainfall_process import DPCRadarRainfallProcessor
-from .arpav_precipitation_process import ARPAVPrecipitationProcessor
-from .arpav_water_level_process import ARPAVWaterLevelProcessor
+# from .arpav_precipitation_process import ARPAVPrecipitationProcessor
+# from .arpav_water_level_process import ARPAVWaterLevelProcessor
+from process_arpav_retriever import ARPAVRetrieverProcessor

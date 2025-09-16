@@ -35,6 +35,8 @@ setuptools.setup(
         "geopandas",
         "rasterio",
         "python-crontab",
-        "duckdb"
+        "duckdb",
+
+        "process-arpav-retriever[pygeoapi] @ git+https://github.com/SaferPlaces2023/process-arpav-retriever.git"
     ]
 )

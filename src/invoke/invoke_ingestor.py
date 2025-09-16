@@ -9,8 +9,8 @@ import requests
 import logging
 import traceback
 
-from saferplacesapi import _utils, _s3_utils
-
+from saferplacesapi import _utils, _s3_utils, _processes_utils
+from process_arpav_retriever import _ARPAV_RETRIEVERS
 
 # DOC: Run from cmd with `python invoke_ingestor.py <path_to_json_file>`
 
@@ -63,6 +63,19 @@ elif ingestor_process == 'arpav-water-level-process':
     start_time = round_time - datetime.timedelta(hours = 12)
     end_time = round_time
     runtime_params['time_range'] = [dt2iso(start_time), dt2iso(end_time)]
+
+elif ingestor_process == 'arpav-retriever-process':
+    round_time = current_utc_datetime.replace(minute=0, second=0, microsecond=0)
+    start_time = round_time - datetime.timedelta(hours = 12)
+    end_time = round_time
+    variable = payload['inputs'].get('variable', None)
+    if variable is None or variable not in _ARPAV_RETRIEVERS:
+        raise ValueError("ARPAV retriever called by cron invocation requires differentiation in variable type (no variable provided)")
+    out = f'{_ARPAV_RETRIEVERS[variable]._tmp_data_folder}/ARPAV__{variable}__{end_time.replace(tzinfo=None).isoformat()}.geojson'
+    bucket_destination = f'{_s3_utils._base_bucket}/ARPAV/{variable}'
+    runtime_params['time_range'] = [dt2iso(start_time), dt2iso(end_time)]
+    runtime_params['out'] = out
+    runtime_params['bucket_destination'] = bucket_destination
 
 elif ingestor_process == 'icon2i-precipitation-ingestor-process':
     forecast_run = current_utc_datetime.replace(hour=floor_to_multiple(current_utc_datetime.hour, 12), minute=0, second=0, microsecond=0)
@@ -130,6 +143,33 @@ def s3_upload_log(log_obj):
         f.write(json.dumps(log_obj))
     _s3_utils.s3_upload(log_obj_filename, log_obj_fileuri, remove_src=True)
     logger.info(f"Log file '{log_obj_filename}' uploaded to S3 bucket '{_LOG_BUCKET}'")
+
+
+def s3_update_avaliable_data(log_obj):
+    """
+    Update the S3 bucket with the available data for the ingestor process.
+    """    
+    # DOC: Only for CAE by now. Will be implemented for next package-installed-processes
+    is_success = log_obj.get('success', False)
+    if is_success:
+        process = log_obj.get('process_name', '')
+        if process == 'arpav-retriever-process':
+            is_ok = log_obj.get('response', dict()).get('status', 'KO') == 'OK'
+            if is_ok:
+                _processes_utils.update_avaliable_data(     # DOC: This will be remove, HIVE partitioned way will be used (confortable, readble and mantainable)
+                    provider = 'ARPAV',
+                    variable = log_obj['payload']['inputs']['variable'],
+                    datetimes = datetime.datetime.fromisoformat(log_obj['payload']['inputs']['time_range'][-1]),
+                    s3_uris = log_obj['response']['uri'],
+                    kw_features = dict()
+                )
+                _processes_utils.update_avaliable_data_HIVE(
+                    provider = 'ARPAV',
+                    variable = log_obj['payload']['inputs']['variable'],
+                    datetimes = datetime.datetime.fromisoformat(log_obj['payload']['inputs']['time_range'][-1]),
+                    s3_uris = log_obj['response']['uri'],
+                    kw_features = dict()
+                )
 
 
 def invoke_process(execute_url, process_name, data, logger):
@@ -259,6 +299,9 @@ def invoke_process(execute_url, process_name, data, logger):
         
     # DOC: Upload single log to S3
     s3_upload_log(log_obj)
+
+    # DOC: Update available data in S3 (if needed)
+    s3_update_avaliable_data(log_obj)
 
 
 

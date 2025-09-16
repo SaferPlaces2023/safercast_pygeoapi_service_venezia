@@ -1,0 +1,22 @@
+{
+    "process": "arpav-retriever-process",
+    "payload": {
+        "inputs": {
+            "debug": true,
+            "async": true,
+            "cron_invocation": true,
+            
+            "token": null,
+            
+            "lat_range": [ 45.28, 45.63 ],
+            "long_range": [ 11.95, 12.46 ],
+
+            "time_range": null,
+            
+            "variable": "precipitation",
+
+            "bucket_destination": null,
+            "out": null
+        }
+    }
+}
