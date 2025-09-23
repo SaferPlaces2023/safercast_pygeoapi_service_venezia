@@ -1,7 +1,7 @@
 import setuptools
 
 VERSION = "0.0.5"
-PACKAGE_NAME = "directed_pygeoapi_service_vicenza"
+PACKAGE_NAME = "directed_pygeoapi_service_venezia"
 AUTHOR = "Valerio Luzzi, Marco Renzi"
 EMAIL = "valerio.luzzi@gecosistema.com, marco.renzi@gecosistema.com"
 GITHUB = "https://github.com/SaferPlaces2023/safercast_pygeoapi_service_venezia"

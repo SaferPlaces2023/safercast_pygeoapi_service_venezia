@@ -1,5 +1,5 @@
 # safer_pygeoapi
-PygeoAPI service SaferPlaces Directed project on Vicenza
+PygeoAPI service SaferPlaces Directed project on Venezia
 
 ## Usage
 Build the image and start the container with docker-compose:
