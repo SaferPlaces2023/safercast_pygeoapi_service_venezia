@@ -112,7 +112,7 @@ class ICON2IPrecipitationIngestorProcessor(BaseProcessor):
         self.dataset_name = 'ICON_2I'
         self.variable_name = 'precipitation'
         
-        self.base_url = 'https://meteohub.mistralportal.it/api'
+        self.base_url = 'https://meteohub.agenziaitaliameteo.it/api'
         self.avaliable_data_url = f'{self.base_url}/datasets/ICON_2I_SURFACE_PRESSURE_LEVELS/opendata'
         self.retrieve_data_url = lambda data_filename: f'{self.base_url}/opendata/{data_filename}'
         

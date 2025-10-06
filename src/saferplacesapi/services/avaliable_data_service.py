@@ -1,8 +1,12 @@
 # -----------------------------------------------------------------------------
 
+from typing import Iterable, List
+
 import os
+import time
 import logging
 import datetime
+
 
 import numpy as np
 import pandas as pd
@@ -15,7 +19,6 @@ from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
 from saferplacesapi import _processes_utils
 from saferplacesapi import _s3_utils
 from saferplacesapi import _utils
-
 
 # -----------------------------------------------------------------------------
 
@@ -114,7 +117,7 @@ class AvaliableDataService(BaseProcessor):
 
     def __init__(self, processor_def):
         super().__init__(processor_def, PROCESS_METADATA)
-
+            
         self.bucket_source = f'{_s3_utils._base_bucket}/__avaliable-data__'
 
         # FIXME: This is absolutely prone to bugs and hard to mantain → time of use a Names class manager is arrived
@@ -212,21 +215,56 @@ class AvaliableDataService(BaseProcessor):
                 group_by = None
 
         return providers, time_range, group_by
-
-            
+    
 
     def query_avaliable_data(self, providers, time_range):
         """
         Query the avaliable data from DuckDB based on the provided providers and time range exploiting hive-partitioning structure of the bucket-source folder.
         """
 
-        # TODO: This is a temporary solution, it should be replaced with a more robust query that can handle multiple providers and time ranges (USE WHERE CLAUSE).
-        q = f"""
-            SELECT *
-            FROM read_json('{self.bucket_source}/year==*/month==*/day==*/provider==*/*.json')
-            ORDER BY date_time DESC, provider ASC
-        """
-        out = duckdb.query(q).df()
+        start_time, end_time = time_range if time_range is not None else (None, None)
+        
+        date_where_clause = ""
+        if start_time and end_time:
+            date_where_clause = f"year BETWEEN {start_time.year} AND {end_time.year} AND month BETWEEN {start_time.month} AND {end_time.month} AND day BETWEEN {start_time.day} AND {end_time.day}"
+        elif start_time:
+            date_where_clause = f"year >= {start_time.year} AND month >= {start_time.month} AND day >= {start_time.day}"
+        elif end_time:
+            date_where_clause = f"year <= {end_time.year} AND month <= {end_time.month} AND day <= {end_time.day}"
+            
+        providers_where_clause = ""
+        if len(providers) > 0:
+            providers_list = ', '.join([f"'{provider}'" for provider in providers.keys()])
+            providers_where_clause = f"provider IN ({providers_list})"
+            
+        where_clause = " AND ".join(filter(None, [date_where_clause, providers_where_clause]))
+        if where_clause:
+            where_clause = f"WHERE {where_clause}"
+            
+        q = (
+            "SELECT * "
+            f"FROM read_json('{self.bucket_source}/year=*/month=*/day=*/provider=*/*.json', hive_partitioning = true, hive_types = {{year: INTEGER, month: INTEGER, day: INTEGER, provider: VARCHAR}}) "
+            f"{where_clause} "
+            "ORDER BY date_time DESC, provider ASC"
+        )
+        LOGGER.debug('\n------------- OPEN DUCKDB CONNECTION -----------------\n')
+        
+        con = duckdb.connect(":memory:")
+        con.execute("INSTALL httpfs; LOAD httpfs;")
+        con.execute("SET s3_region='us-east-1'")
+        
+        LOGGER.debug('\n------------- RUN SQL -----------------\n')
+        
+        # DOC: Before and after we set a sleep to allow server to relase GIL and return [201 + location-header] when using async-execute ... this could seems ugly asf (and yes it is) but works.
+        time.sleep(1)
+        out = con.sql(q)
+        time.sleep(1)
+        
+        LOGGER.debug('\n------------- OUT TO DF -----------------\n')
+        
+        out = out.df()
+        
+        LOGGER.debug('\n------------- DUCK DB END -----------------\n')
 
         # Parse date_time column
         out['date_time'] = pd.to_datetime(out['date_time'])
