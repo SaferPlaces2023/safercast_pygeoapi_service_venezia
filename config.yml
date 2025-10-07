@@ -107,6 +107,11 @@ resources:
         processor:
             name: saferplacesapi.DPCRadarRainfallProcessor
 
+    arpav-retriever-process:
+        type: process
+        processor:
+            name: saferplacesapi.ARPAVRetrieverProcessor
+
 
 
     icon2i-precipitation-ingestor-process:
